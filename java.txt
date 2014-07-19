@@ -1,0 +1,140 @@
+1. The first thing I've done was to make sure the CentOS 6 system is fully up-to-date, so I ran
+
+yum update
+2. Once the update completed, I then checked the system for any other installed JAVA packages using
+
+rpm -qa | grep -E '^open[jre|jdk]|j[re|dk]'
+there was the java-1.6.0-openjdk-1.6.0.0-1.56.1.11.8.el6_3.i686 package already installed so I removed it by running
+
+yum remove java-1.6.0-openjdk
+3. The next step was to go and download the required JAVA JDK package for the system I was working on. It was a 32 bit CentOS 6 so I needed to get the 32 bit JAVA JDK package from Oracle's JAVA download page
+
+Note that I needed to install an older version of JAVA JDK since it was specific to the software I was setting up.
+
+Download JAVA JDK6 here
+
+Download JAVA JDK7 or JDK8 here
+
+You may also wget Oracle JDK 8, JDK 7 or JDK 6 using command line as in
+
+JAVA JDK 8
+
+for 64bit (x86_64) system
+
+wget --no-cookies \
+--no-check-certificate \
+--header "Cookie: oraclelicense=accept-securebackup-cookie" \
+"http://download.oracle.com/otn-pub/java/jdk/8-b132/jdk-8-linux-x64.rpm" \
+-O /opt/jdk-8-linux-x64.rpm
+for 32bit (x86) system
+
+wget --no-cookies \
+--no-check-certificate \
+--header "Cookie: oraclelicense=accept-securebackup-cookie" \
+"http://download.oracle.com/otn-pub/java/jdk/8-b132/jdk-8-linux-i586.rpm" \
+-O /opt/jdk-8-linux-i586.rpm
+JAVA JDK 7
+
+for 64bit (x86_64) system
+
+wget --no-cookies \
+--no-check-certificate \
+--header "Cookie: oraclelicense=accept-securebackup-cookie" \
+"http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jdk-7u51-linux-x64.rpm" \
+-O /opt/jdk-7-linux-x64.rpm
+for 32bit (x86) system
+
+wget --no-cookies \
+--no-check-certificate \
+--header "Cookie: oraclelicense=accept-securebackup-cookie" \
+"http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jdk-7u51-linux-i586.rpm" \
+-O /opt/jdk-7-linux-i586.rpm
+JAVA JDK 6
+
+for 64bit (x86_64) system
+
+wget --no-cookies \
+--no-check-certificate \
+--header "Cookie: oraclelicense=accept-securebackup-cookie" \
+"http://download.oracle.com/otn/java/jdk/6u45-b06/jdk-6u45-linux-x64-rpm.bin" \
+-O /opt/jdk-6u45-linux-x64-rpm.bin
+for 32bit (x86) system
+
+wget --no-cookies \
+--no-check-certificate \
+--header "Cookie: oraclelicense=accept-securebackup-cookie" \
+"http://download.oracle.com/otn/java/jdk/6u45-b06/jdk-6u45-linux-i586-rpm.bin" \
+-O /opt/jdk-6u45-linux-i586-rpm.bin
+4. Once the JAVA JDK package got downloaded I proceeded with installing the package.
+
+a) Installing the JAVA JDK6 package in CentOS 6
+
+for 32bit (x86) system
+
+chmod +x /opt/jdk-6u45-linux-i586-rpm.bin
+/opt/./jdk-6u45-linux-i586-rpm.bin
+for 64bit (x86_64) system
+
+chmod +x /opt/jdk-6u45-linux-x64-rpm.bin
+/opt/./jdk-6u45-linux-x64-rpm.bin
+b) Installing the JAVA JDK7 package in CentOS 6
+
+for 64bit (x86_64) system
+
+rpm -Uvh /opt/jdk-7-linux-x64.rpm
+for 32bit (x86) system
+
+rpm -Uvh /opt/jdk-7-linux-i586.rpm
+c) Installing the JAVA JDK8 package in CentOS 6
+
+for 64bit (x86_64) system
+
+rpm -Uvh /opt/jdk-8-linux-x64.rpm
+for 32bit (x86) system
+
+rpm -Uvh /opt/jdk-8-linux-i586.rpm
+5. Once the JAVA JDK package is installed, I then needed to configure it on the system using the alternatives command. This is in order to tell the system what are the default commands for JAVA. Most sys admins aren't aware about this and I think that it is a vital part when setting the JAVA package
+
+a) Setting up the JAVA JDK6 package
+
+alternatives --install /usr/bin/java java /usr/java/jdk1.6.0_45/jre/bin/java 20000
+alternatives --install /usr/bin/jar jar /usr/java/jdk1.6.0_45/bin/jar 20000
+alternatives --install /usr/bin/javac javac /usr/java/jdk1.6.0_45/bin/javac 20000
+alternatives --install /usr/bin/javaws javaws /usr/java/jdk1.6.0_45/jre/bin/javaws 20000
+alternatives --set java /usr/java/jdk1.6.0_45/jre/bin/java
+alternatives --set javaws /usr/java/jdk1.6.0_45/jre/bin/javaws
+alternatives --set javac /usr/java/jdk1.6.0_45/bin/javac
+alternatives --set jar /usr/java/jdk1.6.0_45/bin/jar
+this set the default commands for JAVA JDK6 and listing the /etc/alternatives/ directory showed the following
+
+ls -lA /etc/alternatives/
+lrwxrwxrwx. 1 root root 29 Feb 22 03:39 jar -> /usr/java/jdk1.6.0_45/bin/jar
+lrwxrwxrwx. 1 root root 34 Feb 22 03:39 java -> /usr/java/jdk1.6.0_45/jre/bin/java
+lrwxrwxrwx. 1 root root 31 Feb 22 03:39 javac -> /usr/java/jdk1.6.0_45/bin/javac
+lrwxrwxrwx. 1 root root 36 Feb 22 03:39 javaws -> /usr/java/jdk1.6.0_45/jre/bin/javaws
+b) Setting up the JAVA JDK7 package
+
+alternatives --install /usr/bin/java java /usr/java/jdk1.7.0_51/jre/bin/java 20000
+alternatives --install /usr/bin/jar jar /usr/java/jdk1.7.0_51/bin/jar 20000
+alternatives --install /usr/bin/javac javac /usr/java/jdk1.7.0_51/bin/javac 20000
+alternatives --install /usr/bin/javaws javaws /usr/java/jdk1.7.0_51/jre/bin/javaws 20000
+alternatives --set java /usr/java/jdk1.7.0_51/jre/bin/java
+alternatives --set javaws /usr/java/jdk1.7.0_51/jre/bin/javaws
+alternatives --set javac /usr/java/jdk1.7.0_51/bin/javac
+alternatives --set jar /usr/java/jdk1.7.0_51/bin/jar
+this set the default commands for JAVA JDK7 and listing the /etc/alternatives/ directory showed the following
+
+ls -lA /etc/alternatives/{jar,java*}
+
+lrwxrwxrwx. 1 root root 29 Mar 7 04:13 /etc/alternatives/jar -> /usr/java/jdk1.7.0_51/bin/jar
+lrwxrwxrwx. 1 root root 34 Mar 7 04:13 /etc/alternatives/java -> /usr/java/jdk1.7.0_51/jre/bin/java
+lrwxrwxrwx. 1 root root 31 Mar 7 04:13 /etc/alternatives/javac -> /usr/java/jdk1.7.0_51/bin/javac
+lrwxrwxrwx. 1 root root 36 Mar 7 04:13 /etc/alternatives/javaws -> /usr/java/jdk1.7.0_51/jre/bin/javaws
+6. Finally I verified the installed version of JAVA
+
+java -version
+
+java version "1.7.0_51"
+Java(TM) SE Runtime Environment (build 1.7.0_51-b13)
+Java HotSpot(TM) 64-Bit Server VM (build 24.51-b03, mixed mode)
+I know this how-to will serve me as a quick reference for installing Oracle JAVA in the future and I truly hope this will help someone else too.
